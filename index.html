@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vue Project</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
+    <link rel="stylesheet" href="asset/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/all.min.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/magnific-popup.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/slicknav.min.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/typography.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/default-css.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/styles.css">
+    <link rel="stylesheet" href="/Front-End/asset/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+    <style>
+        .styled-button {
+            background-color: #fc9928;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 7px;
+        }
+        .loading {
+            font-size: 20px;
+            color: blue;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header id="header">
+            <div class="header-two">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-3 col-sm-6 d-block d-lg-none">
+                            <div class="logo">
+                                <a href="index.html"><img src="/Front-End/asset/images/icon/logo.png" alt="logo"></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 offset-lg-1 d-none d-lg-block">
+                            <div class="main-menu menu-style2">
+                                <nav>
+                                    <ul id="m_menu_active">
+                                        <li class="active"><a href="javascript:void(0);">Home</a></li>
+                                        <li><a href="about.html">About</a></li>
+                                        <li><a href="javascript:void(0);">Courses</a></li>
+                                        <li><a href="javascript:void(0);">Teacher</a></li>
+                                        <li class="middle-logo">
+                                            <a href="index.html">
+                                                <img src="/Front-End/asset/images/icon/logo-middle.png" alt="logo">
+                                            </a>
+                                        </li>
+                                        <li><a href="#">Events</a></li>
+                                        <li><a href="contact.html">Contact</a></li>
+                                        <li>
+                                            <a class="shopping-cart" href="/Front-End/views/cart.html">
+                                                <i class="fa fa-shopping-cart"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="offset-search">
+            <form action="#">
+                <input type="text" name="search" placeholder="Search here...">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+
+        <div class="hero-area has-color">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+                        <div class="hero-content">
+                            <h3>Welcome</h3>
+                            <h1 class="mb-5"><span class="primary-color">Build your Successful</span><b class="line-break"></b>Future with MileStone</h1>
+                            <p class="text-white-50">Find Your Preferred Courses & Improve Your Skills</p>
+                            <form action="">
+                                <div class="form-input mt-5">
+                                    <input type="text" name="search" required placeholder="Enter your keyword...">
+                                    <button class="btn btn-primary btn-round" type="submit">Search</button>
+                                    <i class="fa fa-search"></i>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+        <!-- Course Area Start -->
+        <div class="course-area ptb--120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <div class="section-title-style2 black-title title-tb text-center">
+                            <span>Build your career</span>
+                            <h2 class="primary-color">Featured Courses</h2>
+                        </div>
+                    </div>
+                </div>
+
+              
+                   
+                <label for="filter">Filter by: <span class="sorting-hint">(Sorted alphabetically)</span></label>
+                        <select id="filter" v-model="selectedFilter" @change="sortCourses">
+                            <option value="subject">Subject</option>
+                            <option value="location">Location</option>
+                            <option value="price">Price</option>
+                            <option value="space">Spaces</option>
+                            <option value="category">Category</option>
+                        </select>
+                  
+                    
+                        <label for="sort">Sort Order:</label>
+                        <select id="sort" v-model="selectedSort" @change="sortCourses">
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        </select>
+            
+                
+                <div class="row">
+                    <div class="col-md-4 mb-4" v-for="course in sortedCourses" :key="course._id">
+                        <div class="card h-100">
+                            <img :src="course.image" class="card-img-top" alt="Course Image">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.subject }}</h5>
+                                <p class="card-text">Location: {{ course.location }}</p>
+                                <p class="card-text">Price: ${{ course.price }}</p>
+                                <p class="card-text">Available Spaces: {{ course.space }}</p>
+                                <p class="card-text">Category: {{ course.category }}</p>
+                                <button class="btn btn-primary" @click="addToCart(course)" :disabled="course.space <= 0">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="sortedCourses.length === 0">
+                    <p class="text-muted">No courses available.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="asset/js/vendor/jquery-2.2.4.min.js"></script>
+    <script src="asset/js/bootstrap.min.js"></script>
+    <script src="asset/js/owl.carousel.min.js"></script>
+    <script src="asset/js/jquery.magnific-popup.min.js"></script>
+    <script src="asset/js/jquery.slicknav.min.js"></script>
+    <script src="asset/js/plugins.js"></script>
+    <script src="asset/js/scripts.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                courses: [],
+                selectedFilter: 'subject', // Default filter
+                selectedSort: 'asc', // Default sort order
+                errorMessage: null,
+                loading: true
+            },
+            computed: {
+                sortedCourses() {
+                    // Make a copy of the courses to sort
+                    const sorted = [...this.courses];
+                    sorted.sort((a, b) => {
+                        let comparison = 0;
+                        // Compare based on selected filter
+                        if (this.selectedFilter === 'price' || this.selectedFilter === 'space') {
+                            comparison = a[this.selectedFilter] - b[this.selectedFilter];
+                        } else {
+                            comparison = a[this.selectedFilter].localeCompare(b[this.selectedFilter]);
+                        }
+                        return this.selectedSort === 'asc' ? comparison : -comparison;
+                    });
+                    return sorted;
+                }
+            },
+            mounted() {
+                this.fetchCourses();
+            },
+            methods: {
+                async fetchCourses() {
+                    this.loading = true;
+                    try {
+                        const response = await fetch('http://localhost:3000/api/courses');
+                        if (!response.ok) throw new Error('Failed to fetch courses');
+                        this.courses = await response.json();
+                    } catch (error) {
+                        this.errorMessage = 'Error fetching courses: ' + error.message;
+                        console.error(this.errorMessage);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                addToCart(course) {
+                    if (course.space > 0) {
+                        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                        course.space -= 1;
+                        cart.push(course);
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        alert(`Added ${course.subject} to cart!`);
+                    } else {
+                        alert(`No spaces available for ${course.subject}.`);
+                    }
+                },
+                sortCourses() {
+                    // This method can be left empty; the computed property will handle sorting automatically.
+                }
+            }
+        });
+    </script>
+</body>
+</html>

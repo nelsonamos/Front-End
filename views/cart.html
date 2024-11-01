@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>After School App - Cart</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
+  <link rel="stylesheet" href="asset/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/all.min.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/magnific-popup.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/slicknav.min.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/typography.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/default-css.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/styles.css">
+  <link rel="stylesheet" href="/Front-End/asset/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div id="app">
+    <header id="header">
+        <div class="header-two">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-sm-6 d-block d-lg-none">
+                        <div class="logo">
+                            <a href="index.html"><img src="/Front-End/asset/images/icon/logo.png" alt="logo"></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 offset-lg-1 d-none d-lg-block">
+                        <div class="main-menu menu-style2">
+                            <nav>
+                                <ul id="m_menu_active">
+                                    <li class="active"><a href="/Front-End/">Home</a></li>
+                                    <li><a href="about.html">About</a></li>
+                                    <li><a href="javascript:void(0);">Courses</a></li>
+                                    <li><a href="javascript:void(0);">Teacher</a></li>
+                                    <li class="middle-logo">
+                                        <a href="index.html">
+                                            <img src="/Front-End/asset/images/icon/logo-middle.png" alt="logo">
+                                        </a>
+                                    </li>
+                                    <li><a href="#">Events</a></li>
+                                    <li><a href="contact.html">Contact</a></li>
+                                    <li v-if="cartItems.length > 0">
+                                      <a 
+                                        class="shopping-cart" 
+                                        href="/Front-End/index.html"
+                                      >
+                                        <i class="fa fa-shopping-cart"></i>
+                                      </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-12 d-block d-lg-none">
+                        <div id="mobile_menu"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+  <div class="container mt-5">
+    <h1>Available Courses</h1>
+    <hr>
+    <div id="cart-section">
+      <h3>Your Cart</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Location</th>
+            <th>Price</th>
+            <th>Spaces Remaining</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in cartItems" :key="item.id">
+            <td>{{ item.subject }}</td>
+            <td>{{ item.location }}</td>
+            <td>{{ item.price | currency }}</td>
+            <td>{{ item.space }}</td>
+            <td><button @click="removeFromCart(index)" class="btn btn-danger btn-sm">Remove</button></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <p class="font-weight-bold">Total Price: {{ totalPrice | currency }}</p>
+
+      <!-- User Information Fields -->
+      <div class="form-group">
+        <label for="userName">Name</label>
+        <input type="text" id="userName" v-model="userName" class="form-control" placeholder="Enter your name">
+      </div>
+      <div class="form-group">
+        <label for="userPhone">Phone Number</label>
+        <input type="text" id="userPhone" v-model="userPhone" class="form-control" placeholder="Enter your phone number">
+      </div>
+
+      <!-- Checkout Button -->
+      <button :disabled="!isCheckoutEnabled" @click="checkout" class="btn btn-success mt-3">
+        Checkout
+      </button>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    courses: [],
+                    cartItems: [],
+                    totalPrice: 0,
+                    userName: '',   // User's name
+                    userPhone: ''   // User's phone number
+                };
+            },
+            computed: {
+                // Computed property to enable or disable the checkout button
+                isCheckoutEnabled() {
+                    // Ensure userName and userPhone are not empty and phone contains only digits
+                    const phonePattern = /^\d+$/;
+                    return this.userName.trim() !== '' && phonePattern.test(this.userPhone);
+                }
+            },
+            created() {
+                this.fetchCourses(); // Fetch courses from MongoDB when the page loads
+                this.loadCart(); // Load cart items from local storage
+            },
+            methods: {
+                async fetchCourses() {
+                    try {
+                        const response = await fetch('/api/courses'); // Update with your API endpoint
+                        this.courses = await response.json();
+                    } catch (error) {
+                        console.error('Error fetching courses:', error);
+                    }
+                },
+                addToCart(course) {
+                    if (course.space > 0) {
+                        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                        cart.push({
+                            id: course.id,
+                            subject: course.subject,
+                            location: course.location,
+                            price: course.price,
+                            space: 1
+                        });
+                        console.log("Cart items after adding:", cart);
+                        course.space -= 1;
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        this.loadCart();
+                        alert(`Added ${course.subject} to cart!`);
+                    } else {
+                        alert(`No spaces available for ${course.subject}.`);
+                    }
+                },
+                loadCart() {
+                    this.cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                    console.log("Cart items in loadCart:", this.cartItems);
+                    this.calculateTotalPrice();
+                },
+                calculateTotalPrice() {
+                    let total = this.cartItems.reduce((sum, item) => sum + Number(item.price), 0);
+                    console.log("Calculated total price:", total); // Log total price calculation as a number
+                    this.totalPrice = total;
+                },
+                removeFromCart(index) {
+                    const course = this.cartItems[index];
+                    const courseInMainList = this.courses.find(c => c.id === course.id);
+                    if (courseInMainList) {
+                        courseInMainList.space += 1;
+                    }
+                    this.cartItems.splice(index, 1);
+                    localStorage.setItem('cart', JSON.stringify(this.cartItems));
+                    this.calculateTotalPrice();
+                    alert(`Removed ${course.subject} from cart!`);
+                },
+                checkout() {
+    if (!this.userName || !this.userPhone) {
+        alert("Please enter your name and phone number to proceed.");
+        return;
+    }
+
+    // Create an order object
+    const order = {
+        userName: this.userName,
+        userPhone: this.userPhone,
+        items: this.cartItems,
+        totalPrice: this.totalPrice,
+    };
+
+    // Send the order to the server
+    fetch('http://localhost:3000/api/orders', {  // Full URL here
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(order), // Convert the order object to JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(`Thank you, ${this.userName}! Your order has been placed. Order ID: ${data.orderId}`);
+        // Clear cart and reset form
+        this.cartItems = [];
+        localStorage.removeItem('cart');
+        this.userName = '';
+        this.userPhone = '';
+        this.calculateTotalPrice();
+    })
+    .catch(error => {
+        console.error('Error placing order:', error);
+        alert('There was a problem placing your order. Please try again.');
+    });
+},
+                openCart() {
+                    alert("Opening cart..."); // Replace with cart navigation logic
+                }
+            },
+            filters: {
+                currency(value) {
+                    return '$' + parseFloat(value).toFixed(2);
+                }
+            }
+        });
+    </script>
+    
+</div>
+</body>
+</html>
