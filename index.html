@@ -123,13 +123,11 @@
                   <div class="form-input mt-5">
                     <input
                       v-model="searchQuery"
+                      @input="handleSearchInput"
                       type="text"
                       placeholder="Enter your keyword..."
                       required
                     />
-                    <button class="btn btn-primary btn-round" type="submit">
-                      Search
-                    </button>
                   </div>
                 </form>
               </div>
@@ -177,7 +175,11 @@
               :key="course._id"
             >
               <div class="card h-100">
-                <img :src="course.image" class="card-img-top" alt="Course Image" />
+                <img
+                  :src="course.image"
+                  class="card-img-top"
+                  alt="Course Image"
+                />
                 <div class="card-body">
                   <h5 class="card-title">{{ course.subject }}</h5>
                   <p class="card-text">Location: {{ course.location }}</p>
@@ -252,6 +254,12 @@
         mounted() {
           this.fetchCourses();
         },
+        watch: {
+          searchQuery(newQuery) {
+            // Perform search whenever there's a change in the searchQuery
+            this.performSearch(newQuery);
+          },
+        },
         methods: {
           async fetchCourses() {
             this.loading = true;
@@ -267,17 +275,29 @@
             }
           },
 
-          async performSearch() {
+          handleSearchInput() {
+            // Clear previous timeout to reset debounce
+            clearTimeout(this.typingTimer);
+            // Set up a new timeout to wait before performing search
+            this.typingTimer = setTimeout(() => {
+              this.performSearch();
+            }, this.debounceDelay);
+          },
+
+          async performSearch(query) {
             this.searchPerformed = true;
-            this.searchResults = []; // Clear previous search results
-            if (!this.searchQuery) {
+            this.searchResults = [];
+
+            if (query === "") {
+              // If the search query is empty, clear the search results
               this.searchResults = [];
               return;
             }
+
             try {
               const response = await fetch(
                 `http://localhost:3000/api/search?query=${encodeURIComponent(
-                  this.searchQuery
+                  query
                 )}`
               );
               if (!response.ok) throw new Error("Failed to search courses");
