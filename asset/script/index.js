@@ -93,17 +93,29 @@ new Vue({
         this.errorMessage = "Error performing search";
       }
     },
+
     addToCart(course) {
       if (course.space > 0) {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        course.space -= 1;
-        cart.push(course);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        alert(`Added ${course.subject} to cart!`);
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          cart.push({
+              id: course._id, // Assuming the _id is the MongoDB _id for the course
+              subject: course.subject,
+              location: course.location,
+              price: course.price,
+              space: 1
+          });
+          console.log("Cart items after adding:", cart);
+          course.space -= 1;
+          localStorage.setItem('cart', JSON.stringify(cart));
+          this.loadCart();
+          alert(`Added ${course.subject} to cart!`);
       } else {
-        alert(`No spaces available for ${course.subject}.`);
+          alert(`No spaces available for ${course.subject}.`);
       }
-    },
+  },
+  
+
+
     sortCourses() {
       // This method can be left empty; the computed property will handle sorting automatically.
     },
