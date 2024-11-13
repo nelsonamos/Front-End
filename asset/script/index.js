@@ -37,6 +37,8 @@ new Vue({
       return sorted;
     },
   },
+
+  
   mounted() {
     this.fetchCourses();
   },
@@ -62,6 +64,16 @@ new Vue({
         this.loading = false;
       }
     },
+
+    getImageUrl(path) {
+      const baseUrl = 'http://localhost:3000';
+      
+      // Remove 'back-end' prefix if it exists
+      const cleanPath = path.replace('/back-end', '');
+      
+      // Join the base URL and cleaned path
+      return `${baseUrl}${cleanPath}`;
+  },
 
     handleSearchInput() {
       // Clear previous timeout to reset debounce

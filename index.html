@@ -9,15 +9,16 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
     <link rel="stylesheet" href="asset/css/owl.carousel.min.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/all.min.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/magnific-popup.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/slicknav.min.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/typography.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/default-css.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/styles.css" />
-    <link rel="stylesheet" href="/Front-End/asset/css/responsive.css" />
+    <link rel="stylesheet" href="asset/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="asset/css/all.min.css" />
+    <link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="asset/css/magnific-popup.css" />
+    <link rel="stylesheet" href="asset/css/slicknav.min.css" />
+    <link rel="stylesheet" href="asset/css/typography.css" />
+    <link rel="stylesheet" href="asset/css/default-css.css" />
+    <link rel="stylesheet" href="asset/css/styles.css" />
+    <link rel="stylesheet" href="asset/css/responsive.css" />
+    <link rel="stylesheet" href="asset/js/modernizr-2.8.3-respond-1.4.2.min.js"/>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
@@ -176,7 +177,7 @@
             >
               <div class="card h-100">
                 <img
-                  :src="course.image"
+                  :src="getImageUrl(course.image)"
                   class="card-img-top"
                   alt="Course Image"
                 />
