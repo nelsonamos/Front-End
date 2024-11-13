@@ -51,7 +51,9 @@ new Vue({
       this.loading = true;
       try {
         const response = await fetch("http://localhost:3000/api/courses");
-        if (!response.ok) throw new Error("Failed to fetch courses");
+        if (!response.ok) {
+          throw new Error("Failed to fetch courses");
+        }
         this.courses = await response.json();
       } catch (error) {
         this.errorMessage = "Error fetching courses: " + error.message;
@@ -86,7 +88,9 @@ new Vue({
             query
           )}`
         );
-        if (!response.ok) throw new Error("Failed to search courses");
+        if (!response.ok) {
+          throw new Error("Failed to search courses");
+        }
         this.searchResults = await response.json();
       } catch (error) {
         console.error("Error performing search:", error);
