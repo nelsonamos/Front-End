@@ -1,5 +1,22 @@
 {
+  "name": "front-end",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000F\u0000r\u0000o\u0000n\u0000t\u0000-\u0000E\u0000n\u0000d\u0000\r\u0000 \u0000",
+  "main": "./index.js",
+  "scripts": {
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "deploy": "vue-cli-service build && gh-pages -d dist"
+  },
   "dependencies": {
-    "vue-router": "^4.4.5"
-  }
+    "vue": "^2.6.12",
+    "vue-router": "^3.5.2"
+  },
+  "devDependencies": {
+    "@vue/cli-service": "^4.5.19",
+    "gh-pages": "^6.2.0"
+  },
+  "author": "",
+  "license": "ISC"
 }
