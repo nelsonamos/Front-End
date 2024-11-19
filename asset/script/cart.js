@@ -90,6 +90,10 @@ new Vue({
                 alert("Please enter your name and phone number to proceed.");
                 return;
             }
+            const baseUrl =
+            window.location.hostname === "localhost"
+          ? "http://localhost:3000"
+          : "https://back-end-61de.onrender.com";
 
             const order = {
                 userName: this.userName,
@@ -99,7 +103,7 @@ new Vue({
             };
 
             try {
-                const response = await fetch('http://localhost:3000/api/orders', {
+                const response = await fetch(`${baseUrl}/api/orders`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
