@@ -11,7 +11,7 @@ new Vue({
     searchPerformed: false,
     isLoading: false,
   },
-
+  
   computed: {
     sortedCourses() {
       let courseList =
@@ -48,12 +48,12 @@ new Vue({
         this.searchPerformed = false;
         this.searchResults = [];
       } else {
-      this.performSearch(newQuery);
+        this.performSearch(newQuery);
       }
     },
   },
-
   
+
   
   methods: {
 
@@ -70,7 +70,7 @@ new Vue({
       this.loading = true;
       try {
         const response = await fetch(`${baseUrl}/api/courses`);
-      
+       
       
         if (!response.ok) {
           throw new Error("Failed to fetch courses");
@@ -89,7 +89,7 @@ new Vue({
         window.location.hostname === "localhost"
           ? "http://localhost:3000"
           : "https://back-end-61de.onrender.com";
-
+    
       const cleanPath = path.replace("/back-end", "");
       return `${baseUrl}${cleanPath}`;
     },
