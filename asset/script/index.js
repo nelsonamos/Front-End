@@ -1,8 +1,4 @@
-
-
 new Vue({
-
-  
 
   el: "#app",
   data: {
@@ -16,7 +12,6 @@ new Vue({
     isLoading: false,
   },
 
-  
   computed: {
     sortedCourses() {
       let courseList =
@@ -49,11 +44,16 @@ new Vue({
   },
   watch: {
     searchQuery(newQuery) {
-      // Perform search whenever there's a change in the searchQuery
+      if (!newQuery.trim()) {
+        this.searchPerformed = false;
+        this.searchResults = [];
+      } else {
       this.performSearch(newQuery);
+      }
     },
   },
 
+  
   
   methods: {
 
@@ -65,9 +65,12 @@ new Vue({
       window.location.hostname === "localhost"
     ? "http://localhost:3000"
     : "https://back-end-61de.onrender.com";
+
+    console.log("Base URL:", baseUrl);
       this.loading = true;
       try {
         const response = await fetch(`${baseUrl}/api/courses`);
+      
       
         if (!response.ok) {
           throw new Error("Failed to fetch courses");
@@ -82,12 +85,12 @@ new Vue({
     },
 
     getImageUrl(path) {
-      const baseUrl = "http://localhost:3000";
+      const baseUrl =
+        window.location.hostname === "localhost"
+          ? "http://localhost:3000"
+          : "https://back-end-61de.onrender.com";
 
-      // Remove 'back-end' prefix if it exists
       const cleanPath = path.replace("/back-end", "");
-
-      // Join the base URL and cleaned path
       return `${baseUrl}${cleanPath}`;
     },
 
