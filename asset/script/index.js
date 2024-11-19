@@ -1,5 +1,9 @@
 
+
 new Vue({
+
+  
+
   el: "#app",
   data: {
     courses: [],
@@ -9,8 +13,10 @@ new Vue({
     searchQuery: "",
     searchResults: [],
     searchPerformed: false,
-    loading: true,
+    isLoading: false,
   },
+
+  
   computed: {
     sortedCourses() {
       let courseList =
@@ -38,7 +44,6 @@ new Vue({
     },
   },
 
-  
   mounted() {
     this.fetchCourses();
   },
@@ -48,11 +53,22 @@ new Vue({
       this.performSearch(newQuery);
     },
   },
+
+  
   methods: {
+
+
+    
     async fetchCourses() {
+
+      const baseUrl =
+      window.location.hostname === "localhost"
+    ? "http://localhost:3000"
+    : "https://back-end-61de.onrender.com";
       this.loading = true;
       try {
-        const response = await fetch("http://localhost:3000/api/courses");
+        const response = await fetch(`${baseUrl}/api/courses`);
+      
         if (!response.ok) {
           throw new Error("Failed to fetch courses");
         }
@@ -66,74 +82,88 @@ new Vue({
     },
 
     getImageUrl(path) {
-      const baseUrl = 'http://localhost:3000';
-      
+      const baseUrl = "http://localhost:3000";
+
       // Remove 'back-end' prefix if it exists
-      const cleanPath = path.replace('/back-end', '');
-      
+      const cleanPath = path.replace("/back-end", "");
+
       // Join the base URL and cleaned path
       return `${baseUrl}${cleanPath}`;
-  },
-
-    handleSearchInput() {
-      // Clear previous timeout to reset debounce
-      clearTimeout(this.typingTimer);
-      // Set up a new timeout to wait before performing search
-      this.typingTimer = setTimeout(() => {
-        this.performSearch();
-      }, this.debounceDelay);
     },
 
-    async performSearch(query) {
-      this.searchPerformed = true;
-      this.searchResults = [];
+  async performSearch() {
+    const query = this.searchQuery.trim();
+    if (!query) {
+      return;
+    }
 
-      if (query === "") {
-        // If the search query is empty, clear the search results
+    this.isLoading = true;
+    this.searchResults = [];
+    this.errorMessage = "";
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/search?query=${encodeURIComponent(query)}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch search results.");
+      }
+      this.searchResults = await response.json();
+    } catch (error) {
+      console.error("Error during search:", error);
+      this.errorMessage = "An error occurred while searching.";
+    } finally {
+      this.isLoading = false;
+      this.searchPerformed = true;
+    }
+  },
+
+    handleSearchInput: debounce(function () {
+      if (this.searchQuery.trim() === "") {
         this.searchResults = [];
         return;
       }
+      this.performSearch();
+    }, 300),
 
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/search?query=${encodeURIComponent(
-            query
-          )}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to search courses");
-        }
-        this.searchResults = await response.json();
-      } catch (error) {
-        console.error("Error performing search:", error);
-        this.errorMessage = "Error performing search";
+
+
+    
+    addToCart(course) {
+      if (course.space > 0) {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.push({
+          id: course._id, // Assuming the _id is the MongoDB _id for the course
+          subject: course.subject,
+          location: course.location,
+          price: course.price,
+          space: 1,
+        });
+        console.log("Cart items after adding:", cart);
+        course.space -= 1;
+        localStorage.setItem("cart", JSON.stringify(cart));
+        this.loadCart();
+        alert(`Added ${course.subject} to cart!`);
+      } else {
+        alert(`No spaces available for ${course.subject}.`);
       }
     },
 
-    addToCart(course) {
-      if (course.space > 0) {
-          let cart = JSON.parse(localStorage.getItem('cart')) || [];
-          cart.push({
-              id: course._id, // Assuming the _id is the MongoDB _id for the course
-              subject: course.subject,
-              location: course.location,
-              price: course.price,
-              space: 1
-          });
-          console.log("Cart items after adding:", cart);
-          course.space -= 1;
-          localStorage.setItem('cart', JSON.stringify(cart));
-          this.loadCart();
-          alert(`Added ${course.subject} to cart!`);
-      } else {
-          alert(`No spaces available for ${course.subject}.`);
-      }
-  },
-  
-
-
+    
     sortCourses() {
       // This method can be left empty; the computed property will handle sorting automatically.
     },
   },
 });
+
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), wait);
+  };
+}
+
+
+
