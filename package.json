@@ -1,8 +1,8 @@
 {
   "name": "front-end",
   "version": "1.0.0",
-  "description": "��#\u0000 \u0000F\u0000r\u0000o\u0000n\u0000t\u0000-\u0000E\u0000n\u0000d\u0000\r\u0000 \u0000",
-  "main": "./index.js",
+  "description": " Front-End Project",
+  "main": "./src/main.js",
   "scripts": {
     "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
