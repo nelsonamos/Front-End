@@ -5,14 +5,17 @@ new Vue({
       courses: [],
       cartItems: [],
       totalPrice: 0,
-      userName: "", // User's name
-      userPhone: "", // User's phone number
+      userName: "",
+      userPhone: "",
     };
   },
   computed: {
-    isCheckoutEnabled() {
+    isValidPhone() {
       const phonePattern = /^\d+$/;
-      return this.userName.trim() !== "" && phonePattern.test(this.userPhone);
+      return phonePattern.test(this.userPhone);
+    },
+    isCheckoutEnabled() {
+      return this.userName.trim() !== "" && this.isValidPhone;
     },
   },
   created() {
@@ -22,7 +25,7 @@ new Vue({
   methods: {
     async fetchCourses() {
       try {
-        const response = await fetch("/api/courses");
+        const response = await fetch(this.getBaseUrl() + "/api/courses");
         this.courses = await response.json();
         this.syncCartWithCourses();
       } catch (error) {
@@ -93,10 +96,8 @@ new Vue({
         alert("Please enter your name and phone number to proceed.");
         return;
       }
-      const baseUrl =
-        window.location.hostname === "localhost"
-          ? "http://localhost:3000"
-          : "https://back-end-61de.onrender.com";
+
+      const baseUrl = this.getBaseUrl();
 
       const order = {
         userName: this.userName,
@@ -124,16 +125,13 @@ new Vue({
         );
 
         for (const item of this.cartItems) {
-          await fetch(
-            `http://localhost:3000/api/courses/${item.id}/decrement`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ spacesToReduce: item.space }),
-            }
-          );
+          await fetch(`${baseUrl}/api/courses/${item.id}/decrement`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ spacesToReduce: item.space }),
+          });
         }
 
         await this.fetchCourses();
@@ -147,8 +145,10 @@ new Vue({
         alert("There was a problem placing your order. Please try again.");
       }
     },
-    openCart() {
-      alert("Opening cart...");
+    getBaseUrl() {
+      return window.location.hostname === "localhost"
+        ? "http://localhost:3000"
+        : "https://back-end-61de.onrender.com";
     },
   },
   filters: {
