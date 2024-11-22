@@ -14,7 +14,6 @@
   "devDependencies": {
     "@vue/cli-service": "^5.0.8",
     "gh-pages": "^4.0.0",
-    "vue-cli-service": "^5.0.0",
     "vue-template-compiler": "^2.6.14"
   }
 }
