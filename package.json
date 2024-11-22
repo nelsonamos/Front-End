@@ -2,12 +2,12 @@
   "name": "front-end",
   "version": "1.0.0",
   "description": " Front-End Project",
-  "main": "./src/main.js",
+ 
   "scripts": {
     "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "gh-pages -d ."
   },
   "dependencies": {
     "vue": "^2.6.12",
