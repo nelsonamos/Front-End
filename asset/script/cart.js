@@ -36,7 +36,7 @@ new Vue({
       if (course.space > 0) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-        // Check if course already exists in the cart and update space if needed
+       
         const cartItem = cart.find((item) => item.id === course.id);
         if (cartItem) {
           cartItem.space += 1;
@@ -50,7 +50,7 @@ new Vue({
           });
         }
 
-        course.space -= 1; // Decrease space in the main course list
+        course.space -= 1;
         localStorage.setItem("cart", JSON.stringify(cart));
         this.loadCart();
         alert(`Added ${course.subject} to cart!`);

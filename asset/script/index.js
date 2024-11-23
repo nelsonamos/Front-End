@@ -79,6 +79,7 @@ new Vue({
 
     getImageUrl(path) {
       const cleanPath = path.replace("/back-end", "");
+      
       return `${this.baseUrl}${cleanPath}`;
     },
 
@@ -122,7 +123,7 @@ new Vue({
       if (course.space > 0) {
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         cart.push({
-          id: course._id, // Assuming the _id is the MongoDB _id for the course
+          id: course._id,
           subject: course.subject,
           location: course.location,
           price: course.price,
