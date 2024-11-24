@@ -32,32 +32,7 @@ new Vue({
         console.error("Error fetching courses:", error);
       }
     },
-    addToCart(course) {
-      if (course.space > 0) {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-       
-        const cartItem = cart.find((item) => item.id === course.id);
-        if (cartItem) {
-          cartItem.space += 1;
-        } else {
-          cart.push({
-            id: course.id,
-            subject: course.subject,
-            location: course.location,
-            price: course.price,
-            space: 1,
-          });
-        }
-
-        course.space -= 1;
-        localStorage.setItem("cart", JSON.stringify(cart));
-        this.loadCart();
-        alert(`Added ${course.subject} to cart!`);
-      } else {
-        alert(`No spaces available for ${course.subject}.`);
-      }
-    },
+  
     loadCart() {
       this.cartItems = JSON.parse(localStorage.getItem("cart")) || [];
       this.calculateTotalPrice();
